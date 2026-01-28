@@ -102,7 +102,7 @@ class StreamProcessor:
         print(f"{D}Processing mixed stream types"
               f" through unified interface...{X}")
 
-    def process_all(self):
+    def process_all(self) -> str:
         pass
 
 
