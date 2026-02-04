@@ -10,32 +10,6 @@ H = "\033[1m"
 HC = "\033[1;96m"
 
 
-class NexusManager:
-    def __init__(self):
-        print(f"\n{D}Initializing Nexus Manager...{X}\n"
-              "Pipeline capacity: 1000 streams/second\n\n"
-              f"{D}Creating data processing pipeline...{X}\n"
-              "Stage 1: Input validation and parsing\n"
-              "Stage 2: Data transformation and enrichment\n"
-              "Stage 3: Output formatting and delivery")
-        self.json = JSONAdapter(0)
-        self.csv = CSVAdapter(1)
-        self.stream = StreamAdapter(2)
-
-        for pipeline in [self.json, self.csv, self.stream]:
-            for stage in [InputStage(), TransformStage(), OutputStage()]:
-                pipeline.add_stage(stage)
-
-    def try_process(self, data: Any) -> Any:
-        if isinstance(data, dict):
-            return self.json.process(data)
-        if isinstance(data, str):
-            return self.csv.process(data)
-        if isinstance(data, list):
-            return self.stream.process(data)
-        raise TypeError("Nexus manager: no adapter found for data")
-
-
 class ProcessingStage(Protocol):
     def process(self, data: Any) -> Any:
         ...
@@ -119,6 +93,31 @@ class StreamAdapter(ProcessingPipeline):
         return data
 
 
+class NexusManager:
+    def __init__(self):
+        print(f"\n{D}Initializing Nexus Manager...{X}\n"
+              "Pipeline capacity: 1000 streams/second\n\n"
+              f"{D}Creating data processing pipeline...{X}\n"
+              "Stage 1: Input validation and parsing\n"
+              "Stage 2: Data transformation and enrichment\n"
+              "Stage 3: Output formatting and delivery")
+        self.pipelines: list[ProcessingPipeline] = []
+
+    def add_pipeline(self, pipeline: ProcessingPipeline) -> None:
+        for stage in [InputStage(), TransformStage(), OutputStage()]:
+            pipeline.add_stage(stage)
+        self.pipelines.append(pipeline)
+
+    def process_data(self, data: Any) -> Any:
+        if isinstance(data, dict):
+            return self.pipelines[0].process(data)
+        if isinstance(data, str):
+            return self.pipelines[1].process(data)
+        if isinstance(data, list):
+            return self.pipelines[2].process(data)
+        raise TypeError("Nexus manager: no adapter found for data")
+
+
 if __name__ == "__main__":
     data_json = {"sensor": "temp", "value": 23.5, "unit": "C"}
     data_csv = "user,action,timestamp"
@@ -126,10 +125,13 @@ if __name__ == "__main__":
 
     print(f"\n{H}=== CODE NEXUS - ENTERPRISE PIPELINE SYSTEM ==={X}")
     nexus = NexusManager()
+    nexus.add_pipeline(JSONAdapter(0))
+    nexus.add_pipeline(CSVAdapter(1))
+    nexus.add_pipeline(StreamAdapter(2))
     print(f"\n{H}=== Multi-Format Data Processing ==={X}")
-    nexus.try_process({"sensor": "temp", "value": 23.5, "unit": "C"})
-    nexus.try_process("user,action,timestamp")
-    nexus.try_process([2.1, 12.1, 22.1, 32.1, 42.1])
+    nexus.process_data({"sensor": "temp", "value": 23.5, "unit": "C"})
+    nexus.process_data("user,action,timestamp")
+    nexus.process_data([2.1, 12.1, 22.1, 32.1, 42.1])
     print(f"\n{H}=== Pipeline Chaining Demo ==={X}")
     print("Pipeline A -> Pipeline B -> Pipeline C")
     print("Data flow: Raw -> Processed -> Analyzed -> Stored")
@@ -137,7 +139,7 @@ if __name__ == "__main__":
     print("Performance: 95% efficiency, 0.2s total processing time")
     print(f"\n{H}=== Error Recovery Test ==={X}")
     try:
-        nexus.try_process(nexus)
+        nexus.process_data(nexus)
     except TypeError as e:
         print(f"{R}Error in {e}{X}\n"
               f"Recovery initiated: Switching to backup processor\n{G}"
