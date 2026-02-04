@@ -2,9 +2,27 @@
 from abc import ABC, abstractmethod
 from typing import Any, List, Dict, Union, Optional, Protocol  # noqa
 
+X = "\033[0m"
+R = "\033[91m"
+G = "\033[92m"
+B = "\033[94m"
+C = "\033[96m"
+M = "\033[95m"
+Y = "\033[93m"
+D = "\033[2m"
+H = "\033[1m"
+HC = "\033[1;96m"
+HY = "\033[1;93m"
+
 
 class NexusManager:
-    pass
+    def __init__(self):
+        print(f"\n{D}Initializing Nexus Manager...\n"
+              "Pipeline capacity: 1000 streams/second\n\n"
+              f"Creating data processing pipeline...{X}")
+        self.json = JSONAdapter(0)
+        self.csv = CSVAdapter(1)
+        self.stream = StreamAdapter(2)
 
 
 class ProcessingStage(Protocol):
@@ -37,7 +55,7 @@ class ProcessingPipeline(ABC):
         pass
 
     def add_stage(self, stage: ProcessingStage) -> None:
-        pass
+        self.stages.append(stage)
 
 
 class JSONAdapter(ProcessingPipeline):
@@ -53,3 +71,12 @@ class CSVAdapter(ProcessingPipeline):
 class StreamAdapter(ProcessingPipeline):
     def process(self, data: Any) -> Union[str, Any]:
         pass
+
+
+if __name__ == "__main__":
+    print(f"\n{H}=== CODE NEXUS - ENTERPRISE PIPELINE SYSTEM ==={X}")
+    nexus = NexusManager()
+    print(f"\n{H}=== Multi-Format Data Processing ==={X}")
+    print(f"\n{H}=== Pipeline Chaining Demo ==={X}")
+    print(f"\n{H}=== Error Recovery Test ==={X}")
+    print(f"\n{G}Nexus integration complete. All systems operational.{X}")
