@@ -31,7 +31,7 @@ class DataStream(ABC):
 
 
 class SensorStream(DataStream):
-    def __init__(self, stream_id: str):
+    def __init__(self, stream_id: str) -> None:
         super().__init__()
         self.stream_id = stream_id
         print(f"{D}Initializing Sensor Stream...{X}")
@@ -54,7 +54,7 @@ class SensorStream(DataStream):
 
 
 class TransactionStream(DataStream):
-    def __init__(self, stream_id: str):
+    def __init__(self, stream_id: str) -> None:
         super().__init__()
         self.stream_id = stream_id
         print(f"{D}Initializing Transaction Stream...{X}")
@@ -78,7 +78,7 @@ class TransactionStream(DataStream):
 
 
 class EventStream(DataStream):
-    def __init__(self, stream_id: str):
+    def __init__(self, stream_id: str) -> None:
         super().__init__()
         self.stream_id = stream_id
         print(f"{D}Initializing Event Stream...{X}")
@@ -97,7 +97,7 @@ class EventStream(DataStream):
 
 
 class StreamProcessor:
-    def __init__(self):
+    def __init__(self) -> None:
         self.sensor_stream = 1
         print(f"{D}Processing mixed stream types"
               f" through unified interface...{X}")

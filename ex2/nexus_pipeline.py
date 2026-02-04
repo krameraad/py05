@@ -1,20 +1,10 @@
 #!/usr/bin/env python3
 from abc import ABC, abstractmethod
-from typing import Any, List, Dict, Union, Optional, Protocol
+from typing import Any, List, Dict, Union, Optional, Protocol  # noqa
 
 
 class NexusManager:
     pass
-
-
-class ProcessingPipeline(ABC):
-    def __init__(self, pipeline_id: int):
-        self.pipeline_id = pipeline_id
-        self.stages = list[ProcessingStage]
-
-    @abstractmethod
-    def process():
-        pass
 
 
 class ProcessingStage(Protocol):
@@ -34,6 +24,19 @@ class TransformStage:
 
 class OutputStage:
     def process(self, data: Any) -> Any:
+        pass
+
+
+class ProcessingPipeline(ABC):
+    def __init__(self, pipeline_id: int):
+        self.pipeline_id = pipeline_id
+        self.stages: list[ProcessingStage] = []
+
+    @abstractmethod
+    def process(self, data: Any) -> Union[str, Any]:
+        pass
+
+    def add_stage(self, stage: ProcessingStage) -> None:
         pass
 
 
