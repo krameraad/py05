@@ -5,21 +5,19 @@ from typing import Any, Union, Protocol
 X = "\033[0m"
 R = "\033[91m"
 G = "\033[92m"
-B = "\033[94m"
-C = "\033[96m"
-M = "\033[95m"
-Y = "\033[93m"
 D = "\033[2m"
 H = "\033[1m"
 HC = "\033[1;96m"
-HY = "\033[1;93m"
 
 
 class NexusManager:
     def __init__(self):
         print(f"\n{D}Initializing Nexus Manager...{X}\n"
               "Pipeline capacity: 1000 streams/second\n\n"
-              f"{D}Creating data processing pipeline...{X}")
+              f"{D}Creating data processing pipeline...{X}\n"
+              "Stage 1: Input validation and parsing\n"
+              "Stage 2: Data transformation and enrichment\n"
+              "Stage 3: Output formatting and delivery")
         self.json = JSONAdapter(0)
         self.csv = CSVAdapter(1)
         self.stream = StreamAdapter(2)
